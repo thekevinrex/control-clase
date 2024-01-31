@@ -37,15 +37,15 @@ class ProfesorTable extends AbstractTable
      *
      * @return mixed
      */
-    public function for ()
+    public function for()
     {
         $query = User::query()
             ->where('super_admin', false)
             ->where('id', '!=', Auth::user()->id);
 
         if (
-            Auth::user()->isAdmin() ||
-            Auth::user()->roles->contains(fn($value) => in_array($value->role_id, [RoleEnum::ADMIN, RoleEnum::DECANA]))
+            $this->request->user()->isAdmin() ||
+            $this->request->user()->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::ADMIN, RoleEnum::DECANA]))
         ) {
             return $query;
         }
@@ -64,27 +64,28 @@ class ProfesorTable extends AbstractTable
     public function configure(SpladeTable $table)
     {
         $table
-            ->withGlobalSearch(columns: ['name', 'email'])
-            ->column('name', searchable: true);
+            ->withGlobalSearch(columns: ['name', 'email'], label: __('Buscar...'))
+            ->column('name',  label: "Nombre");
 
         $table->column(
             key: 'departament_id',
-            label: 'Departament',
-            as: fn($departament_id, User $user) => $user->departament->name ?? '-',
+            label: __('Departamento'),
+            as: fn ($departament_id, User $user) => $user->departament->name ?? '-',
         );
 
         $table->column(
             key: 'category_id',
-            label: 'Category',
-            as: fn($category_id, User $user) => $user->category->name ?? '-',
+            label: __('Categoria'),
+            as: fn ($category_id, User $user) => $user->category->name ?? '-',
         );
 
         $table->column(
-            key: 'actions'
+            key: 'actions',
+            label: __('Acciones'),
         );
 
         $table->bulkAction(
-            label: 'Delete profesors',
+            label: __('Eliminar profesores'),
             each: function (User $user) {
                 if ($this->request->user()->can('delete', $user)) {
                     $user->delete();
@@ -93,11 +94,7 @@ class ProfesorTable extends AbstractTable
             confirm: true,
             requirePassword: true
         );
-        // ->searchInput()
-        // ->selectFilter()
-        // ->withGlobalSearch()
 
-        // ->bulkAction()
-        // ->export()
+        $table->paginate(10);
     }
 }

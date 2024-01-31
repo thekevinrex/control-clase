@@ -14,14 +14,13 @@ export default {
 
     theme: {
         extend: {
-            background: {
+            colors: {
                 primary: {
                     DEFAULT: "#e2702e",
-                },
-            },
-            color: {
-                primary: {
-                    DEFAULT: "#e2702e",
+                    800: "#e2702ec2",
+                    500: "#e2702e9f",
+                    300: "#e2702e6c",
+                    200: "#e2702e62",
                 },
             },
         },

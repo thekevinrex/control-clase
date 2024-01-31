@@ -1,19 +1,26 @@
-<div class="min-h-screen">
+<div class="min-h-screen flex flex-col w-full">
     @include('layouts.navigation')
 
-    <!-- Page Heading -->
-    @if(isset($header))
-    <header class="bg-white shadow">
-        <h1 class="max-w-7xl mx-auto py-6 px-4 sm:px-6 lg:px-8">
-            {{ $header }}
-        </h1>
-    </header>
-    @endif
+    <div class="w-full flex-col flex items-center">
+        <!-- Page Heading -->
+        @if (isset($header))
+            <header class="bg-white max-w-7xl w-full flex flex-col gap-y-5 items-start pt-5 px-5">
+                {{ $header }}
+            </header>
+        @endif
 
-    @if(isset($hero)) {{ $hero }} @endif
+        @if (isset($hero))
+            {{ $hero }}
+        @endif
 
-    <!-- Page Content -->
-    <main>
-        {{ $slot }}
-    </main>
+        <!-- Page Content -->
+        <main class="max-w-7xl flex flex-col gap-y-5 w-full px-5">
+            {{ $slot }}
+        </main>
+
+        <footer class="bg-white max-w-7xl w-full flex flex-col gap-y-5 ">
+            @include('layouts.footer')
+        </footer>
+
+    </div>
 </div>

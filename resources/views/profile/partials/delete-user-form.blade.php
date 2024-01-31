@@ -1,22 +1,22 @@
 <section class="space-y-6">
     <header>
         <h2 class="text-lg font-medium text-gray-900">
-            {{ __('Delete Account') }}
+            {{ __('Eliminar cuenta') }}
         </h2>
 
         <p class="mt-1 text-sm text-gray-600">
-            {{ __('Once your account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.') }}
+            {{ __('Una vez que la cuenta se elimine toda la información se borrará permanentemente. Introduce tu contraseña para confirmar que quieres eliminar la cuenta.') }}
         </p>
     </header>
 
      <x-splade-form
         method="delete"
         :action="route('profile.destroy')"
-        :confirm="__('Are you sure you want to delete your account?')"
-        :confirm-text="__('Once your account is deleted, all of its resources and data will be permanently deleted. Please enter your password to confirm you would like to permanently delete your account.')"
-        :confirm-button="__('Delete Account')"
+        :confirm="__('Estas seguro que deseas eliminar tu cuenta?')"
+        :confirm-text="__('Una vez que la cuenta se elimine toda la información se borrará permanentemente. Introduce tu contraseña para confirmar que quieres eliminar la cuenta.')"
+        :confirm-button="__('Eliminar cuenta')"
         require-password
     >
-        <x-splade-submit danger :label="__('Delete Account')" />
+        <x-splade-submit danger :label="__('Eliminar cuenta')" />
     </x-splade-form>
 </section>

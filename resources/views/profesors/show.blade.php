@@ -1,29 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Profesors') }}
-        </h2>
+        <h1 class="text-2xl md:text-4xl font-bold">
+            {{ __('Profesores') }}
+        </h1>
 
-        <Link class="" slideover href="{{ route('profesors.create') }}">add profesor</Link>
-
+        <Link slideover href="{{ route('profesors.create') }}"><x-splade-button>{{ __('Añadir profesor')}}</x-splade-button></Link>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+        <div class="max-w-7xl bg-white">
+            <x-splade-table :for="$profesors">
 
-                    <x-splade-table :for="$profesors">
-
-                        <x-splade-cell actions as="$profesor">
-                            <div class="flex justify-between flex-row space-x-3">
-                                @include('profesors.actions')
-                            </div>
-                        </x-splade-cell>
-                    </x-splade-table>
-
-                </div>
-            </div>
+                <x-splade-cell actions as="$profesor">
+                    <div class="flex justify-between flex-row space-x-3">
+                        @include('profesors.actions')
+                    </div>
+                </x-splade-cell>
+            </x-splade-table>
         </div>
     </div>
 

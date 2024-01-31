@@ -1,6 +1,6 @@
 <x-splade-modal slideover :close-button="false">
         
-    <h2>
+    <h2 class="font-semibold text-xl">
         {{ $header }}
     </h2>
 

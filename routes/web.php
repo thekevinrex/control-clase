@@ -3,6 +3,7 @@
 use App\Http\Controllers\AsignatureController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartamentController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfesorController;
 use App\Http\Controllers\ProfileController;
@@ -33,78 +34,9 @@ Route::middleware('splade')->group(function () {
     // Registers routes to support async File Uploads with Filepond...
     Route::spladeUploads();
 
-    Route::middleware('auth')->group(function () {
+    Route::middleware(['auth', 'verified'])->group(function () {
 
-        Route::get('/', function () {
-
-            $navigationMap = [
-                _('Administrative') => [
-                    [
-                        "name" => __('Profesors'),
-                        "link" => route('profesors.show'),
-                        'des' => '',
-                    ],
-                    [
-                        "name" => __('Departaments'),
-                        "link" => route('departament.show'),
-                        'des' => '',
-                    ],
-                    [
-                        "name" => __('Roles'),
-                        "link" => route('role.show'),
-                        "des" => ''
-                    ],
-                    [
-                        "name" => __('Categories'),
-                        "link" => route('categories.show'),
-                        "des" => ''
-                    ],
-                    [
-                        "name" => __('Asignatures'),
-                        "link" => route("asignature.show"),
-                        "des" => ''
-                    ]
-                ],
-                __('Plans') => [
-                    [
-                        "name" => __('Actual'),
-                        "link" => route('plan.actual'),
-                        "des" => ''
-                    ],
-                    [
-                        "name" => __('Create'),
-                        "link" => __('plan.create'),
-                        "des" => ''
-                    ],
-                    [
-                        "name" => __('List'),
-                        "link" => '#',
-                        "des" => ''
-                    ]
-                ],
-                __('User') => [
-                    [
-                        "name" => __('Profile'),
-                        "link" => route('profile.edit'),
-                        "des" => ''
-                    ]
-                ],
-                __('Informs') => [
-                    [
-                        "name" => __('List'),
-                        "link" => '#',
-                        "des" => ''
-                    ],
-                    [
-                        "name" => __('Create'),
-                        "link" => '#',
-                        "des" => ''
-                    ]
-                ]
-            ];
-
-            return view('dashboard', compact("navigationMap"));
-        })->middleware(['verified'])->name('dashboard');
+        Route::get('/', [HomeController::class, 'navigation'])->name('dashboard');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
