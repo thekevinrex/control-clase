@@ -54,41 +54,46 @@ class NavigationService
                     "route" => "asignature.*",
                 ]
             ],
-            __('Plans') => [
+            __('Planes') => [
                 [
-                    "name" => __('Actual'),
+                    "name" => __('Plan Actual'),
                     "link" => route('plan.actual'),
-                    "des" => ''
+                    "des" => '',
+                    'can' => !$this->request->user()->isAdmin()
                 ],
                 [
-                    "name" => __('Create'),
-                    "link" => __('plan.create'),
-                    "des" => ''
+                    "name" => __('Crear plan'),
+                    "link" => route('plan.create'),
+                    "des" => '',
+                    'can' => !$this->request->user()->isAdmin()
                 ],
                 [
-                    "name" => __('List'),
+                    "name" => __('Planes'),
                     "link" => '#',
-                    "des" => ''
+                    "des" => '',
+                    'can' => !$this->request->user()->isAdmin()
                 ]
             ],
-            __('User') => [
+            __('Usuario') => [
                 [
-                    "name" => __('Profile'),
+                    "name" => __('Perfil'),
                     "link" => route('profile.edit'),
                     "des" => '',
                     'can' => !$header
                 ]
             ],
-            __('Informs') => [
+            __('Informes') => [
                 [
-                    "name" => __('List'),
+                    "name" => __('Informes'),
                     "link" => '#',
-                    "des" => ''
+                    "des" => '',
+                    'can' => !$this->request->user()->isAdmin()
                 ],
                 [
-                    "name" => __('Create'),
+                    "name" => __('Crear informe'),
                     "link" => '#',
-                    "des" => ''
+                    "des" => '',
+                    'can' => !$this->request->user()->isAdmin()
                 ]
             ]
         ])

@@ -40,6 +40,10 @@ class PlanController extends Controller
             abort(404, 'El periodo actual debe ser visto solo por el jefe de departamento');
         }
 
+        if (Plan::whereNull('periodo_id')->where('departament_id', $departament_id)->first() !== null) {
+            return redirect()->route('plan.actual');
+        }
+
         $profesors = User::where('departament_id', $departament_id)
             ->where('super_admin', false)
             ->get();
@@ -47,7 +51,7 @@ class PlanController extends Controller
         $categories = Category::all();
 
         $plan = [
-            'categories' => $categories->mapWithKeys(fn($category) => [$category->id => ['total' => 0, 'id' => $category->id]]),
+            'categories' => $categories->mapWithKeys(fn ($category) => [$category->id => ['total' => 0, 'id' => $category->id]]),
             'profesors' => [],
         ];
 
@@ -70,9 +74,9 @@ class PlanController extends Controller
 
         $plan = [
             'categories' => $plan->categories->mapWithKeys(
-                fn($category) => [$category->id => ['total' => $category->pivot->total, 'id' => $category->id]]
+                fn ($category) => [$category->id => ['total' => $category->pivot->total, 'id' => $category->id]]
             ),
-            'profesors' => $plan->profesors->map(fn($profesor) => [
+            'profesors' => $plan->profesors->map(fn ($profesor) => [
                 'profesor' => $profesor->id,
                 'semana' => $profesor->pivot->semana,
                 'key' => Str::uuid(),
@@ -111,7 +115,7 @@ class PlanController extends Controller
 
         $plan->profesors()->attach(
             array_map(
-                fn($profesor) => [
+                fn ($profesor) => [
                     'user_id' => $profesor['profesor'],
                     'semana' => $profesor['semana']
                 ],
@@ -121,7 +125,7 @@ class PlanController extends Controller
 
         $plan->categories()->attach(
             array_map(
-                fn($category) => [
+                fn ($category) => [
                     'category_id' => $category['id'],
                     'total' => $category['total'],
                 ],
@@ -153,7 +157,7 @@ class PlanController extends Controller
 
         $plan->profesors()->sync(
             array_map(
-                fn($profesor) => [
+                fn ($profesor) => [
                     'user_id' => $profesor['profesor'],
                     'semana' => $profesor['semana']
                 ],
@@ -163,7 +167,7 @@ class PlanController extends Controller
 
         $plan->categories()->sync(
             array_map(
-                fn($category) => [
+                fn ($category) => [
                     'category_id' => $category['id'],
                     'total' => $category['total'],
                 ],

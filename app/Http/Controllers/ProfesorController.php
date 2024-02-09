@@ -39,7 +39,6 @@ class ProfesorController extends Controller
             'action' => route('profesors.update', $user->id),
             'edit' => true,
         ]);
-
     }
 
     public function update(UpdateProfesorRequest $request, User $user)

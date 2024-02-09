@@ -1,34 +1,22 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Create plan') }}
-        </h2>
+        <h1 class="text-2xl md:text-4xl font-bold">
+            {{ isset($edit) && $edit ? __('Editar plan') : __('Create plan') }}
+        </h1>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
-                    
-                    <x-splade-form 
-                        :method="isset($edit) && $edit ? 'patch' : 'post'"
-                        :default="$plan" 
-                        action="{{ isset($edit) && $edit ? route('plan.update', $plan['id']) : route('plan.add') }}"
-                    >
 
-                        <PlanCreate
-                            :form="form" 
-                            :categories="{{ ($categories) }}" 
-                            :profesors="{{ ($profesors) }}" 
-                        />
+        <x-splade-form :method="isset($edit) && $edit ? 'patch' : 'post'" :default="$plan"
+            action="{{ isset($edit) && $edit ? route('plan.update', $plan['id']) : route('plan.add') }}">
 
-                        <x-splade-submit class="mt-5">{{ isset($edit) && $edit ? __('Edit') : __('Create') }}</x-splade-submit>
-                    </x-splade-form>
-                    
-                    
-                </div>
-            </div>
-        </div>
+            <PlanCreate :form="form" :categories="{{ ($categories) }}" :profesors="{{ ($profesors) }}" />
+
+            <x-splade-submit class="mt-5">{{ isset($edit) && $edit ? __('Editar plan') : __('Crear plan') }}
+            </x-splade-submit>
+        </x-splade-form>
+
+
     </div>
 
 </x-app-layout>
