@@ -4,6 +4,7 @@ use App\Http\Controllers\AsignatureController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartamentController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfesorController;
 use App\Http\Controllers\ProfileController;
@@ -115,6 +116,11 @@ Route::middleware('splade')->group(function () {
 
             Route::get('/plan/update/{plan}', [PlanController::class, 'edit'])->name('plan.edit');
             Route::patch('/plan/update/{plan}', [PlanController::class, 'update'])->name('plan.update');
+        });
+
+        Route::middleware('can:viewAny,App\Models\Plan')->group(function () {
+
+            Route::post('/observacion/create/{plan}', [ObservacionController::class, 'add'])->name('observacion.add');
         });
     });
 

@@ -1,41 +1,34 @@
 <x-app-layout>
     <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <h1 class="text-2xl md:text-4xl font-bold">
             {{ __('Roles') }}
-        </h2>
+        </h1>
 
-        <Link href="{{ route('role.create') }}" slideover>Add role</Link>
+        <Link slideover href="{{ route('role.create') }}">
+        <x-splade-button>{{ __('Asignar role') }}</x-splade-button></Link>
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 bg-white border-b border-gray-200">
+        <div class="max-w-7xl">
 
-                    <x-splade-table :for="$roles">
+            <x-splade-table :for="$roles">
 
-                        <x-splade-cell actions as="$role">
-                            <div class="flex justify-between flex-row space-x-3">
-                                
-                                <Link slideover href="{{ route('role.edit', $role->id) }}" class=" bg-cyan-300 text-white px-4 py-2 rounded-md">
-                                    Edit
-                                </Link>
-                                
-                                <x-splade-form
-                                    method="delete"
-                                    :confirm="true"
-                                    :action="route('role.delete', $role->id)"
-                                >
-                                    <x-splade-submit danger :label="__('Delete')" />
-                                </x-splade-form>
-                                
+                <x-splade-cell actions as="$role">
+                    <div class="flex justify-between flex-row space-x-3">
 
-                            </div>
-                        </x-splade-cell>
-                    </x-splade-table>
+                        <Link slideover href="{{ route('role.edit', $role->id) }}"
+                            class=" bg-primary-800 text-white px-4 py-2 rounded-md">
+                        {{ __('Editar') }}
+                        </Link>
 
-                </div>
-            </div>
+                        <x-splade-form method="delete" :confirm="__('Estas seguro que deseas eliminar este rol?')" :confirm-button="__('Eliminar rol')" :action="route('role.delete', $role->id)">
+                            <x-splade-submit danger :label="__('Eliminar rol')" />
+                        </x-splade-form>
+
+                    </div>
+                </x-splade-cell>
+            </x-splade-table>
+
         </div>
     </div>
 

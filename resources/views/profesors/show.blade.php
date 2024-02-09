@@ -4,7 +4,9 @@
             {{ __('Profesores') }}
         </h1>
 
-        <Link slideover href="{{ route('profesors.create') }}"><x-splade-button>{{ __('Añadir profesor')}}</x-splade-button></Link>
+        <Link slideover href="{{ route('profesors.create') }}">
+        <x-splade-button>{{ __('Añadir profesor') }}</x-splade-button>
+        </Link>
     </x-slot>
 
     <div class="py-12">
@@ -19,5 +21,4 @@
             </x-splade-table>
         </div>
     </div>
-
 </x-app-layout>

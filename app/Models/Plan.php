@@ -24,4 +24,9 @@ class Plan extends Model
             ->withPivot('semana')
             ->withTimestamps();
     }
+
+    public function observaciones()
+    {
+        return $this->hasMany(Observacion::class);
+    }
 }
