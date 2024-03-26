@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Observacion;
 use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,5 +34,37 @@ class ObservacionController extends Controller
             ->autoDismiss(5);
 
         return redirect()->route('plan.actual');
+    }
+
+    public function update(Request $request, Observacion $observacion)
+    {
+
+        $request->validate([
+            'observacion' => 'required',
+        ], [
+            'observacion' => 'La observación es requerida',
+        ]);
+
+        $observacion->update([
+            'observacion' => $request->observacion
+        ]);
+
+        Toast::success('Observación editada correctamente')
+            ->leftBottom()
+            ->autoDismiss(5);
+
+        return redirect()->back();
+    }
+
+    public function delete(Request $request, Observacion $observacion)
+    {
+
+        $observacion->delete();
+
+        Toast::success('Observación eliminada correctamente')
+            ->leftBottom()
+            ->autoDismiss(5);
+
+        return redirect()->back();
     }
 }

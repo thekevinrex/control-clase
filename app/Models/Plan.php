@@ -11,22 +11,18 @@ class Plan extends Model
 
     protected $fillable = ['user_id', 'departament_id'];
 
-    public function categories()
+    public function controls()
     {
-        return $this->belongsToMany(Category::class, 'plans_categories')
-            ->withPivot('total')
-            ->withTimestamps();
-    }
-
-    public function profesors()
-    {
-        return $this->belongsToMany(User::class, 'plans_profesors')
-            ->withPivot('semana')
-            ->withTimestamps();
+        return $this->hasMany(PlanControl::class);
     }
 
     public function observaciones()
     {
         return $this->hasMany(Observacion::class);
+    }
+
+    public function departament()
+    {
+        return $this->belongsTo(Departament::class);
     }
 }

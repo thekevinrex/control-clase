@@ -21,7 +21,7 @@ class CategoryController extends Controller
     public function create()
     {
         return view('categories.create', [
-            'header' => __('Add category'),
+            'header' => __('Añadir categoria docente'),
             'action' => route('categories.add'),
         ]);
     }
@@ -29,7 +29,7 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         return view('categories.create', [
-            'header' => __('Edit category'),
+            'header' => __('Editar categoria docente'),
             'action' => route('categories.update', $category->id),
             'edit' => true,
             'category' => $category
@@ -47,7 +47,7 @@ class CategoryController extends Controller
             'name' => $request->name,
         ]);
 
-        Toast::success(__('Category added successfully'))
+        Toast::success(__('Categoria docente registrada correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 
@@ -66,10 +66,12 @@ class CategoryController extends Controller
             'name' => $request->name,
         ]);
 
-        Toast::success(__('Category updated successfully'))
+        Toast::success(__('Categoria docente editada correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 
+            
+            
         return redirect()->back();
     }
 
@@ -78,7 +80,7 @@ class CategoryController extends Controller
     {
         $category->delete();
 
-        Toast::success(__('Category deleted successfully'))
+        Toast::success(__('Categoria docente eliminada correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 

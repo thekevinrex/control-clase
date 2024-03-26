@@ -2,10 +2,14 @@
 
 namespace App\Tables;
 
+use App\Models\Asignature;
 use App\Models\Departament;
 use Illuminate\Http\Request;
-use ProtoneMedia\Splade\AbstractTable;
 use ProtoneMedia\Splade\SpladeTable;
+use Spatie\QueryBuilder\QueryBuilder;
+use ProtoneMedia\Splade\AbstractTable;
+use ProtoneMedia\Splade\Facades\Toast;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class DepartamentTable extends AbstractTable
 {
@@ -34,9 +38,17 @@ class DepartamentTable extends AbstractTable
      *
      * @return mixed
      */
-    public function for ()
+    public function for()
     {
-        return Departament::query();
+        return QueryBuilder::for(Departament::class)
+            ->select('departaments.*')
+            ->distinct()
+            ->join('departaments_asignatures', 'departaments_asignatures.departament_id', 'departaments.id')
+            ->allowedIncludes('asignature')
+            ->allowedFilters([
+                AllowedFilter::partial('global', 'departaments.name'),
+                AllowedFilter::exact('asignature_id', 'departaments_asignatures.asignature_id', false)
+            ]);
     }
 
     /**
@@ -49,35 +61,43 @@ class DepartamentTable extends AbstractTable
     {
         $table
             ->withGlobalSearch(
-                label: __('Search by name...'),
+                label: __('Buscar por nombre...'),
                 columns: ['name']
             )
-            ->column('name')
+            ->column('name', label: __("Nombre"))
             ->column(
                 key: null,
-                label: __('Asignatures'),
-                as: fn($asignature, $departament) => implode(
+                label: __('Asignaturas'),
+                as: fn ($asignature, $departament) => implode(
                     ', ',
                     $departament->asignature->map(
-                        fn($asignature) => $asignature->name
+                        fn ($asignature) => $asignature->name
                     )->toArray()
                 )
             )
-            ->column('actions');
+            ->column('actions', label: 'Acciones');
 
         $table->bulkAction(
-            label: 'Delete asignatures',
+            label: 'Eliminar departamentos',
             each: function (Departament $departament) {
                 $departament->delete();
             },
-            confirm: true
+            confirm: true,
+            confirmText: __('¿Está seguro de que desea eliminar los departamentos?'),
+            after: function () {
+                Toast::success('Departamentos eliminados correctamente')
+                    ->autoDismiss(5)
+                    ->leftBottom();
+            }
         );
 
-        // ->searchInput()
-        // ->selectFilter()
-        // ->withGlobalSearch()
+        $table->selectFilter(
+            key: 'asignature_id',
+            label: __('Asignatura'),
+            options: Asignature::all()->mapWithKeys(fn ($asignature) => [$asignature['id'] => $asignature['name']])->toArray(),
 
-        // ->bulkAction()
-        // ->export()
+        );
+
+        $table->paginate(10);
     }
 }

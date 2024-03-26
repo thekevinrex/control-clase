@@ -2,7 +2,7 @@
 
 @php
 
-    $navigationMap = $navigation->getNavigaitonMap(true);
+$navigationMap = $navigation->getNavigaitonMap(true);
 
 @endphp
 
@@ -22,9 +22,9 @@
                     <!-- Navigation Links -->
                     <div class="hidden space-x-8 sm:-my-px sm:ml-10 sm:flex">
                         <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home"
-                                width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"
-                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24"
+                                height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                stroke-linecap="round" stroke-linejoin="round">
                                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                                 <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
                                 <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
@@ -33,30 +33,31 @@
                         </x-nav-link>
 
                         @foreach ($navigationMap as $name => $navigation)
-                            <x-dropdown>
-                                <x-slot name="trigger">
-                                    <x-nav-link as="div">
-                                        <div>{{ $name }}</div>
+                        <x-dropdown>
+                            <x-slot name="trigger">
+                                <x-nav-link as="div">
+                                    <div>{{ $name }}</div>
 
-                                        <div class="ml-1">
-                                            <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                                viewBox="0 0 20 20">
-                                                <path fill-rule="evenodd"
-                                                    d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
-                                                    clip-rule="evenodd" />
-                                            </svg>
-                                        </div>
-                                    </x-nav-link>
-                                </x-slot>
+                                    <div class="ml-1">
+                                        <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
+                                            viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd"
+                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
+                                                clip-rule="evenodd" />
+                                        </svg>
+                                    </div>
+                                </x-nav-link>
+                            </x-slot>
 
-                                <x-slot name="content">
-                                    @foreach ($navigation as $link)
-                                        <x-dropdown-link :href="$link['link']" :active="isset($link['route']) && request()->routeIs($link['route'])">
-                                            {{ $link['name'] }}
-                                        </x-dropdown-link>
-                                    @endforeach
-                                </x-slot>
-                            </x-dropdown>
+                            <x-slot name="content">
+                                @foreach ($navigation as $link)
+                                <x-dropdown-link :href="$link['link']"
+                                    :active="isset($link['route']) && request()->routeIs($link['route'])">
+                                    {{ $link['name'] }}
+                                </x-dropdown-link>
+                                @endforeach
+                            </x-slot>
+                        </x-dropdown>
                         @endforeach
 
 
@@ -64,7 +65,7 @@
                 </div>
 
                 <!-- Settings Dropdown -->
-                <div class="hidden sm:flex sm:items-center sm:ml-6">
+                <div class="hidden sm:flex sm:items-center">
                     <x-dropdown placement="bottom-end">
                         <x-slot name="trigger">
                             <button
@@ -123,15 +124,16 @@
                 </x-responsive-nav-link>
 
                 @foreach ($navigationMap as $name => $navigation)
-                    <div class="flex flex-col gap-y-2">
-                        <div class="text-xs p-2 border-t">{{ $name }}</div>
+                <div class="flex flex-col gap-y-2">
+                    <div class="text-xs p-2 border-t">{{ $name }}</div>
 
-                        @foreach ($navigation as $link)
-                            <x-responsive-nav-link :href="$link['link']" :active="isset($link['route']) && request()->routeIs($link['route'])">
-                                {{ $link['name'] }}
-                            </x-responsive-nav-link>
-                        @endforeach
-                    </div>
+                    @foreach ($navigation as $link)
+                    <x-responsive-nav-link :href="$link['link']"
+                        :active="isset($link['route']) && request()->routeIs($link['route'])">
+                        {{ $link['name'] }}
+                    </x-responsive-nav-link>
+                    @endforeach
+                </div>
                 @endforeach
 
             </div>

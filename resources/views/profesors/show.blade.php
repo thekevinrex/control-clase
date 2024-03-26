@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-slot name="header">
-        <h1 class="text-2xl md:text-4xl font-bold">
+        <h1 class="text-2xl md:text-4xl font-bold capitalize">
             {{ __('Profesores') }}
         </h1>
 
@@ -10,13 +10,12 @@
     </x-slot>
 
     <div class="py-12">
-        <div class="max-w-7xl bg-white">
+        <div class="max-w-7xl">
             <x-splade-table :for="$profesors">
 
                 <x-splade-cell actions as="$profesor">
-                    <div class="flex justify-between flex-row space-x-3">
-                        @include('profesors.actions')
-                    </div>
+                    @include('profesors.actions')
+
                 </x-splade-cell>
             </x-splade-table>
         </div>

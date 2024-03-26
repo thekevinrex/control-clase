@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Departament;
-use App\Tables\DepartamentTable;
 use Illuminate\Http\Request;
+use App\Tables\DepartamentTable;
+use ProtoneMedia\Splade\Facades\Toast;
 
 class DepartamentController extends Controller
 {
@@ -21,7 +22,7 @@ class DepartamentController extends Controller
     public function create()
     {
         return view('departament.create', [
-            'header' => __('Add departament'),
+            'header' => __('Añadir departamento'),
             'action' => route('departament.add'),
         ]);
     }
@@ -30,11 +31,11 @@ class DepartamentController extends Controller
     {
 
         $departament->asignatures = $departament->asignature->map(
-            fn($asignature) => $asignature->id
+            fn ($asignature) => $asignature->id
         )->toArray();
 
         return view('departament.create', [
-            'header' => __('Edit departament'),
+            'header' => __('Editar departamento'),
             'action' => route('departament.update', $departament->id),
             'edit' => true,
             'departament' => $departament
@@ -56,6 +57,10 @@ class DepartamentController extends Controller
 
         $departament->asignature()->attach($request->asignatures);
 
+        Toast::success('Departamento registrado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
+
         return redirect()->back();
     }
 
@@ -73,6 +78,10 @@ class DepartamentController extends Controller
 
         $departament->asignature()->sync($request->asignatures);
 
+        Toast::success('Departamento editado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
+
         return redirect()->back();
     }
 
@@ -81,7 +90,11 @@ class DepartamentController extends Controller
     {
         $departament->delete();
 
+
+        Toast::success('Departamento eliminado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
+
         return redirect()->back();
     }
-
 }

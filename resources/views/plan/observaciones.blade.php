@@ -1,13 +1,13 @@
 @props(['plan'])
 
-<div class="grid grid-cols-3  gap-y-7 mt-10">
+<div class="grid md:grid-cols-2  lg:grid-cols-3  gap-y-7 mt-10">
 
 
-    <h2 class="text-2xl font-semibold col-span-3">
+    <h2 class="text-2xl font-semibold col-span-full">
         {{ __('Observaciones del plan') }}
     </h2>
 
-    <div class="col-span-2 flex flex-col gap-y-5">
+    <div class="lg:col-span-2 flex flex-col gap-y-5">
 
         @if(count($plan->observaciones) === 0)
         <div class="flex items-center justify-center text-xl font-semibold min-h-[200px]">
@@ -21,7 +21,8 @@
 
     </div>
 
-    <x-splade-form :action="route('observacion.add', ['plan' => $plan->id])">
+    @if (is_null($plan->periodo_id))
+    <x-splade-form preserve-scroll :action="route('observacion.add', ['plan' => $plan->id])">
         <div class="max-w-xl p-5 border rounded-md shadow-sm flex flex-col gap-y-5">
 
             <h3 class="text-lg font-semibold">
@@ -33,4 +34,5 @@
             <x-splade-submit :label="__('Añadir observación')" />
         </div>
     </x-splade-form>
+    @endif
 </div>

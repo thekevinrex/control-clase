@@ -14,7 +14,7 @@ class UserPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->isAdmin() || $user->roles->contains(fn($value) => in_array($value->role_id, RoleEnum::UPDATEUSERS));
+        return $user->isAdmin() || $user->roles->contains(fn ($value) => in_array($value->role_id, RoleEnum::UPDATEUSERS));
     }
 
     /**
@@ -34,7 +34,7 @@ class UserPolicy
             return true;
         }
 
-        if ($user->roles->contains(fn($value) => in_array($value->role_id, [RoleEnum::ADMIN]))) {
+        if ($user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::ADMIN]))) {
             return true;
         }
 
@@ -42,7 +42,7 @@ class UserPolicy
             return false;
         }
 
-        if ($role_id == RoleEnum::JEFE && !$user->roles->contains(fn($value) => in_array($value->role_id, [RoleEnum::DECANA]))) {
+        if ($role_id == RoleEnum::JEFE && !$user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::DECANA]))) {
             return false;
         }
 
@@ -96,15 +96,14 @@ class UserPolicy
             return false;
         }
 
-        if ($to->roles->contains(RoleEnum::DECANA) && !$user->roles->contains(fn($role) => in_array($role, [RoleEnum::ADMIN]))) {
+        if ($to->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::DECANA])) && !$user->roles->contains(fn ($role) => in_array($role->role_id, [RoleEnum::ADMIN]))) {
             return false;
         }
 
-        if ($to->roles->contains(RoleEnum::JEFE) && !$user->roles->contains(fn($role) => in_array($role, [RoleEnum::ADMIN, RoleEnum::DECANA]))) {
+        if ($to->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE])) && !$user->roles->contains(fn ($role) => in_array($role->role_id, [RoleEnum::ADMIN, RoleEnum::DECANA]))) {
             return false;
         }
 
-        return $user->departament_id == $to->departament_id;
-
+        return ($user->departament_id == $to->departament_id) || $user->roles->contains(fn ($role) => in_array($role->role_id, [RoleEnum::ADMIN, RoleEnum::DECANA]));
     }
 }

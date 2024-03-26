@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Tables\ProfesorTable;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use ProtoneMedia\Splade\Facades\Toast;
 
 class ProfesorController extends Controller
 {
@@ -20,8 +21,8 @@ class ProfesorController extends Controller
 
     public function create()
     {
-        return view('profesors.edit', [
-            'header' => __('Add Profesor'),
+        return view('profesors.create', [
+            'header' => __('Añadir profesor'),
             'action' => url('/register'),
             'edit' => false,
         ]);
@@ -33,9 +34,9 @@ class ProfesorController extends Controller
 
         $user->role_id = $user->roles->first()->role_id;
 
-        return view('profesors.edit', [
+        return view('profesors.create', [
             'profesor' => $user,
-            'header' => __('Edit profesor') . ': ' . $user->name,
+            'header' => __('Editar profesor') . ': ' . $user->name,
             'action' => route('profesors.update', $user->id),
             'edit' => true,
         ]);
@@ -70,6 +71,10 @@ class ProfesorController extends Controller
 
         $user->save();
 
+        Toast::success('Profesor editado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
+
         return redirect()->route('profesors.show');
     }
 
@@ -82,6 +87,10 @@ class ProfesorController extends Controller
         ]);
 
         $user->delete();
+
+        Toast::success('Profesor eliminado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
 
         return redirect()->back();
     }

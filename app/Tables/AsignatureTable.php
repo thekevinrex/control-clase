@@ -4,8 +4,9 @@ namespace App\Tables;
 
 use App\Models\Asignature;
 use Illuminate\Http\Request;
-use ProtoneMedia\Splade\AbstractTable;
 use ProtoneMedia\Splade\SpladeTable;
+use ProtoneMedia\Splade\AbstractTable;
+use ProtoneMedia\Splade\Facades\Toast;
 
 class AsignatureTable extends AbstractTable
 {
@@ -34,7 +35,7 @@ class AsignatureTable extends AbstractTable
      *
      * @return mixed
      */
-    public function for ()
+    public function for()
     {
         return Asignature::query();
     }
@@ -48,23 +49,23 @@ class AsignatureTable extends AbstractTable
     public function configure(SpladeTable $table)
     {
         $table
-            ->withGlobalSearch(columns: ['name'])
-            ->column('name')
-            ->column('actions');
+            ->withGlobalSearch(columns: ['name'], label: __('Buscar...'))
+            ->column('name', label: __('Nombre'))
+            ->column('actions', label: __('Acciones'));
 
         $table->bulkAction(
-            label: 'Delete asignatures',
+            label: __('Eliminar asignaturas'),
             each: function (Asignature $asignature) {
                 $asignature->delete();
             },
-            confirm: true
+            confirm: true,
+            after: function () {
+                Toast::success('Asignaturas eliminadas correctamente')
+                    ->autoDismiss(5)
+                    ->leftBottom();
+            }
         );
 
-        // ->searchInput()
-        // ->selectFilter()
-        // ->withGlobalSearch()
-
-        // ->bulkAction()
-        // ->export()
+        $table->paginate(10);
     }
 }

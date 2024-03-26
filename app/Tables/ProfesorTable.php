@@ -2,13 +2,18 @@
 
 namespace App\Tables;
 
-use App\Enum\RoleEnum;
 use App\Models\User;
+use App\Enum\RoleEnum;
+use App\Models\Category;
+use App\Models\Departament;
 use App\Policies\UserPolicy;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use ProtoneMedia\Splade\AbstractTable;
 use ProtoneMedia\Splade\SpladeTable;
+use Spatie\QueryBuilder\QueryBuilder;
+use ProtoneMedia\Splade\AbstractTable;
+use ProtoneMedia\Splade\Facades\Toast;
+use Spatie\QueryBuilder\AllowedFilter;
 
 class ProfesorTable extends AbstractTable
 {
@@ -39,9 +44,14 @@ class ProfesorTable extends AbstractTable
      */
     public function for()
     {
-        $query = User::query()
-            ->where('super_admin', false)
-            ->where('id', '!=', Auth::user()->id);
+        $query = QueryBuilder::for(User::class)
+            ->where('super_admin', 0)
+            ->where('id', '!=', Auth::user()->id)
+            ->allowedFilters([
+                AllowedFilter::partial('global', 'name'),
+                AllowedFilter::exact('category_id', 'category_id', false),
+                AllowedFilter::exact('departament_id', 'departament_id', false)
+            ]);
 
         if (
             $this->request->user()->isAdmin() ||
@@ -65,7 +75,7 @@ class ProfesorTable extends AbstractTable
     {
         $table
             ->withGlobalSearch(columns: ['name', 'email'], label: __('Buscar...'))
-            ->column('name',  label: "Nombre");
+            ->column('name',  label: __("Nombre"));
 
         $table->column(
             key: 'departament_id',
@@ -75,7 +85,7 @@ class ProfesorTable extends AbstractTable
 
         $table->column(
             key: 'category_id',
-            label: __('Categoria'),
+            label: __('Categoria docente'),
             as: fn ($category_id, User $user) => $user->category->name ?? '-',
         );
 
@@ -92,7 +102,27 @@ class ProfesorTable extends AbstractTable
                 }
             },
             confirm: true,
-            requirePassword: true
+            requirePassword: true,
+            after: function () {
+                Toast::success(__('Profesores eliminados correctamente.'))
+                    ->autoDismiss(5)
+                    ->leftBottom();
+            }
+        );
+
+        $table->selectFilter(
+            key: 'category_id',
+            label: __('Categoria docente'),
+            options: Category::all()->mapWithKeys(fn ($category) => [$category->id => $category->name])->toArray(),
+        );
+
+        $table->selectFilter(
+            key: 'departament_id',
+            label: __('Departamento'),
+            options: [
+                0 => __('Ninguno'),
+                ...Departament::all()->mapWithKeys(fn ($departament) => [$departament->id => $departament->name])->toArray()
+            ],
         );
 
         $table->paginate(10);

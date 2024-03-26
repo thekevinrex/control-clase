@@ -6,6 +6,7 @@ use App\Models\CategoriesTable;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use ProtoneMedia\Splade\AbstractTable;
+use ProtoneMedia\Splade\Facades\Toast;
 use ProtoneMedia\Splade\SpladeTable;
 
 class CategoryTable extends AbstractTable
@@ -35,7 +36,7 @@ class CategoryTable extends AbstractTable
      *
      * @return mixed
      */
-    public function for ()
+    public function for()
     {
         return Category::query();
     }
@@ -49,24 +50,23 @@ class CategoryTable extends AbstractTable
     public function configure(SpladeTable $table)
     {
         $table
-            ->withGlobalSearch(columns: ['name'])
-            ->column('name')
-            ->column('actions');
+            ->withGlobalSearch(columns: ['name'], label: __('Buscar'))
+            ->column('name', label: __('Nombre'))
+            ->column('actions', label: __('Acciones'));
 
         $table->bulkAction(
-            label: 'Delete categories',
+            label: __('Eliminar categorias docentes'),
             each: function (Category $category) {
                 $category->delete();
             },
-            confirm: true
+            confirm: true,
+            after: function () {
+                Toast::success('Categorias docentes elimadas correctamente')
+                    ->leftBottom()
+                    ->autoDismiss(5);
+            }
         );
 
-
-        // ->searchInput()
-        // ->selectFilter()
-        // ->withGlobalSearch()
-
-        // ->bulkAction()
-        // ->export()
+        $table->paginate(10);
     }
 }

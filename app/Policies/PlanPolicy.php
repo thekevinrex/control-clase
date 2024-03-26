@@ -20,7 +20,7 @@ class PlanPolicy
 
     public function actual(User $user)
     {
-        return $user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE])) && !is_null($user->departament_id);
+        return ($user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE])) && !is_null($user->departament_id)) || ($user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::DECANA])));
     }
 
     public function create(User $user)

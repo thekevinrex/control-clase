@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Category;
+use App\Enum\RoleEnum;
 use App\Models\Plan;
 use App\Models\User;
+use App\Models\Informe;
+use App\Models\Category;
+use App\Tables\ControlsTable;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
 use ProtoneMedia\Splade\Facades\Toast;
 
 class PlanController extends Controller
@@ -19,6 +22,10 @@ class PlanController extends Controller
 
         $departament_id = Auth::user()?->departament_id;
 
+        if (Auth::user()->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::DECANA, RoleEnum::ADMIN])) || Auth::user()->isAdmin()) {
+            return $this->actualDecana();
+        }
+
         if (is_null($departament_id)) {
             abort(404, 'El periodo actual debe ser visto solo por el jefe de departamento');
         }
@@ -27,8 +34,95 @@ class PlanController extends Controller
             ->where('departament_id', $departament_id)
             ->first();
 
+        if (!$plan) {
+            return redirect()->route('plan.create');
+        }
+
+        return $this->show($plan);
+    }
+
+    public function actualDecana()
+    {
+        $plans = Plan::whereNull('periodo_id')->get();
+
+        return view('plan.actual-decana', [
+            'planes' => array_map(
+                function ($plan) {
+                    return [
+                        'departament' => $plan->departament->name,
+                        'controls' => $plan->controls->count(),
+                        'realizados' => Informe::where('departament_id', $plan->departament_id)->where('periodo_id', null)->where('state', 3)->count(),
+                        'id' => $plan->id,
+                    ];
+                },
+                $plans->all()
+            ),
+        ]);
+    }
+
+    public function show(Plan $plan)
+    {
+        $departament_id = $plan->departament_id;
+
+        $informes = Informe::where('departament_id', $departament_id)->where('periodo_id', null)->where('state', 3);
+
+        $stats = [
+            'controls' => [
+                'total' => $plan->controls->count(),
+                'realizados' => $informes->count(),
+            ],
+            'results' => [
+                2 => 0,
+                3 => 0,
+                4 => 0,
+                5 => 0
+            ],
+            'per_cates' => [
+                'cates' => Category::all(),
+                'planificados' => [
+                    'cates' => [],
+                    'total' => 0,
+                ],
+                'realizados' => [
+                    'cates' => [],
+                    'total' => 0
+                ]
+            ]
+        ];
+
+        foreach ($plan->controls as $control) {
+
+            $cate = $control->profesor_controlado->category->id;
+
+            if (in_array($cate, array_keys($stats['per_cates']['planificados']['cates']))) {
+                $stats['per_cates']['planificados']['cates'][$cate]++;
+            } else {
+                $stats['per_cates']['planificados']['cates'][$cate] = 1;
+            }
+
+            $stats['per_cates']['planificados']['total']++;
+        }
+
+        foreach ($informes->get() as $informe) {
+
+            $stats['results'][$informe->evaluation]++;
+
+            $cate = $informe->controlado->category->id;
+
+            if (in_array($cate, array_keys($stats['per_cates']['realizados']['cates']))) {
+                $stats['per_cates']['realizados']['cates'][$cate]++;
+            } else {
+                $stats['per_cates']['realizados']['cates'][$cate] = 1;
+            }
+
+            $stats['per_cates']['realizados']['total']++;
+        }
+
         return view('plan.actual', [
             'plan' => $plan,
+            'stats' => $stats,
+            'controls' => ControlsTable::class,
+            'own' => Auth::user()->departament_id === $departament_id && Auth::user()->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE])),
         ]);
     }
 
@@ -48,15 +142,11 @@ class PlanController extends Controller
             ->where('super_admin', false)
             ->get();
 
-        $categories = Category::all();
-
         $plan = [
-            'categories' => $categories->mapWithKeys(fn ($category) => [$category->id => ['total' => 0, 'id' => $category->id]]),
-            'profesors' => [],
+            'controls' => [],
         ];
 
         return view('plan.create', [
-            'categories' => $categories,
             'profesors' => $profesors,
             'plan' => $plan
         ]);
@@ -70,24 +160,19 @@ class PlanController extends Controller
             ->where('super_admin', false)
             ->get();
 
-        $categories = Category::all();
-
-        $plan = [
-            'categories' => $plan->categories->mapWithKeys(
-                fn ($category) => [$category->id => ['total' => $category->pivot->total, 'id' => $category->id]]
-            ),
-            'profesors' => $plan->profesors->map(fn ($profesor) => [
-                'profesor' => $profesor->id,
-                'semana' => $profesor->pivot->semana,
+        $data = [
+            'controls' => $plan->controls->map(fn ($control) => [
+                'profesor' => $control->controlador,
+                'to_profesor' => $control->controlado,
+                'semana' => $control->semana,
                 'key' => Str::uuid(),
             ]),
             'id' => $plan->id,
         ];
 
         return view('plan.create', [
-            'categories' => $categories,
             'profesors' => $profesors,
-            'plan' => $plan,
+            'plan' => $data,
             'edit' => true
         ]);
     }
@@ -96,16 +181,14 @@ class PlanController extends Controller
     {
 
         $request->validate([
-            'profesors' => 'required',
-            'profesors.*.profesor' => ['required', 'integer', 'exists:profesors,id'],
-            'profesors.*.semana' => ['required', 'integer', 'min:1'],
-
-            'categories.*.id' => ['required', 'integer', 'exists:categories,id'],
-            'categories.*.total' => ['required', 'numeric', 'min:0']
+            'controls' => 'required',
+            'controls.*.profesor' => ['required', 'integer', 'exists:profesors,id'],
+            'controls.*.to_profesor' => ['required', 'integer', 'exists:profesors,id'],
+            'controls.*.semana' => ['required', 'integer', 'min:1'],
         ], [
-            'profesors.*.semana' => 'La semana debe ser mayor o igual a uno',
-            'profesors.*.profesor' => 'El profesor seleccionado es incorrecto',
-            'categories.*.total' => 'La cantidad de controles por categoria debe ser mayor a 1',
+            'controls.*.semana' => 'La semana debe ser mayor o igual a uno',
+            'controls.*.profesor' => 'El profesor seleccionado es incorrecto',
+            'controls.*.to_profesor' => 'El profesor seleccionado es incorrecto',
         ]);
 
         $plan = Plan::create([
@@ -113,27 +196,18 @@ class PlanController extends Controller
             'departament_id' => Auth::user()->departament_id,
         ]);
 
-        $plan->profesors()->attach(
-            array_map(
-                fn ($profesor) => [
-                    'user_id' => $profesor['profesor'],
-                    'semana' => $profesor['semana']
-                ],
-                $request->profesors
-            )
-        );
+        foreach (array_map(
+            fn ($control) => [
+                'controlador' => $control['profesor'],
+                'controlado' => $control['to_profesor'],
+                'semana' => $control['semana']
+            ],
+            $request->controls
+        ) as $control) {
+            $plan->controls()->create($control);
+        }
 
-        $plan->categories()->attach(
-            array_map(
-                fn ($category) => [
-                    'category_id' => $category['id'],
-                    'total' => $category['total'],
-                ],
-                $request->categories
-            )
-        );
-
-        Toast::success('Plan created successfully')
+        Toast::success('Plan de control a clases registrado correctamente')
             ->leftBottom()
             ->autoDismiss(5);
 
@@ -143,39 +217,30 @@ class PlanController extends Controller
     public function update(Request $request, Plan $plan)
     {
         $request->validate([
-            'profesors' => 'required',
-            'profesors.*.profesor' => ['required', 'integer', 'exists:profesors,id'],
-            'profesors.*.semana' => ['required', 'integer', 'min:1'],
-
-            'categories.*.id' => ['required', 'integer', 'exists:categories,id'],
-            'categories.*.total' => ['required', 'numeric', 'min:0']
+            'controls' => 'required',
+            'controls.*.profesor' => ['required', 'integer', 'exists:profesors,id'],
+            'controls.*.to_profesor' => ['required', 'integer', 'exists:profesors,id'],
+            'controls.*.semana' => ['required', 'integer', 'min:1'],
         ], [
-            'profesors.*.semana' => 'La semana debe ser mayor o igual a uno',
-            'profesors.*.profesor' => 'El profesor seleccionado es incorrecto',
-            'categories.*.total' => 'La cantidad de controles por categoria debe ser mayor a 1',
+            'controls.*.semana' => 'La semana debe ser mayor o igual a uno',
+            'controls.*.profesor' => 'El profesor seleccionado es incorrecto',
+            'controls.*.to_profesor' => 'El profesor seleccionado es incorrecto',
         ]);
 
-        $plan->profesors()->sync(
-            array_map(
-                fn ($profesor) => [
-                    'user_id' => $profesor['profesor'],
-                    'semana' => $profesor['semana']
-                ],
-                $request->profesors
-            )
-        );
+        $plan->controls()->delete([]);
 
-        $plan->categories()->sync(
-            array_map(
-                fn ($category) => [
-                    'category_id' => $category['id'],
-                    'total' => $category['total'],
-                ],
-                $request->categories
-            )
-        );
+        foreach (array_map(
+            fn ($control) => [
+                'controlador' => $control['profesor'],
+                'controlado' => $control['to_profesor'],
+                'semana' => $control['semana']
+            ],
+            $request->controls
+        ) as $control) {
+            $plan->controls()->create($control);
+        }
 
-        Toast::success('Plan updated successfully')
+        Toast::success('Plan de control a clases editado correctamente')
             ->leftBottom()
             ->autoDismiss(5);
 
@@ -188,7 +253,7 @@ class PlanController extends Controller
 
         $plan->delete();
 
-        Toast::success('Plan deleted successfully')
+        Toast::success('Plan de control a clases eliminado correctamente')
             ->leftBottom()
             ->autoDismiss(5);
 

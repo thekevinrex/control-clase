@@ -1,6 +1,6 @@
-<x-splade-select :label="__('Asignatures')" required name="asignatures[]" multiple>
-    <option disabled value="" selected>{{ __('Select asignatures') }}</option>
+<x-splade-select :label="__('Asignaturas')" required name="asignatures[]" multiple>
+    <option disabled value="" selected>{{ __('Seleccionar asignaturas') }}</option>
     @foreach ($asignatures as [$id, $name])
-        <option value="{{ $id }}">{{ $name }}</option>
+    <option value="{{ $id }}">{{ $name }}</option>
     @endforeach
 </x-splade-select>

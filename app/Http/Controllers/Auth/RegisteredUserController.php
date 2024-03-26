@@ -3,13 +3,14 @@
 namespace App\Http\Controllers\Auth;
 
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\RegisterRequest;
-use Illuminate\Auth\Events\Registered;
-use Illuminate\Http\Request;
 use App\Models\User;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\RegisterRequest;
+use Illuminate\Auth\Events\Registered;
+use ProtoneMedia\Splade\Facades\Toast;
 
 class RegisteredUserController extends Controller
 {
@@ -45,6 +46,10 @@ class RegisteredUserController extends Controller
         $user->roles()->create(['role_id' => $data['role_id']]);
 
         event(new Registered($user));
+
+        Toast::success('Profesor registrado correctamente')
+            ->autoDismiss(5)
+            ->leftBottom();
 
         return redirect()->back();
     }

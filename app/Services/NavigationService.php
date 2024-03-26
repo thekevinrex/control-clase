@@ -85,13 +85,13 @@ class NavigationService
             __('Informes') => [
                 [
                     "name" => __('Informes'),
-                    "link" => '#',
+                    "link" => route('informe.show'),
                     "des" => '',
                     'can' => !$this->request->user()->isAdmin()
                 ],
                 [
                     "name" => __('Crear informe'),
-                    "link" => '#',
+                    "link" => route('informe.create'),
                     "des" => '',
                     'can' => !$this->request->user()->isAdmin()
                 ]

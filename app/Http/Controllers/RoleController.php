@@ -22,7 +22,7 @@ class RoleController extends Controller
     public function create()
     {
         return view('roles.create', [
-            'header' => __('Add role'),
+            'header' => __('Añadir rol'),
             'action' => route('role.add'),
         ]);
     }
@@ -30,7 +30,7 @@ class RoleController extends Controller
     public function edit(Role $role)
     {
         return view('roles.create', [
-            'header' => __('Edit role'),
+            'header' => __('Editar rol'),
             'action' => route('role.update', $role->id),
             'edit' => true,
             'role' => $role
@@ -50,7 +50,7 @@ class RoleController extends Controller
             'role_id' => $request->role_id,
         ]);
 
-        Toast::success(__('Role added successfully'))
+        Toast::success(__('Rol registrado correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 
@@ -70,7 +70,7 @@ class RoleController extends Controller
             'role_id' => $request->role_id,
         ]);
 
-        Toast::success(__('Role updated successfully'))
+        Toast::success(__('Rol editado correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 
@@ -84,7 +84,7 @@ class RoleController extends Controller
 
         $role->delete();
 
-        Toast::success(__('Role deleted successfully'))
+        Toast::success(__('Rol eliminado correctamente'))
             ->autoDismiss(5)
             ->leftBottom();
 

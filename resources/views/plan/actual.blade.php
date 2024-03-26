@@ -2,11 +2,11 @@
     <x-slot name="header">
 
         <h1 class="text-2xl md:text-4xl font-bold">
-            {{ __('Plan actual') }}
+            {{ $own && is_null($plan->periodo_id) ? __('Plan actual') : __('Plan de control a clases') }}
         </h1>
 
-        @isset($plan)
-        <div class=" flex flex-row space-x-5">
+        @if(isset($plan) && $own )
+        <div class=" flex flex-row gap-5 flex-wrap">
 
             <Link href="{{ route('plan.edit', $plan->id) }}">
             <x-splade-button>{{ __('Editar plan actual') }}</x-splade-button>

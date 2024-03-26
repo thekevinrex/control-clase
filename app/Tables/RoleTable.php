@@ -2,16 +2,17 @@
 
 namespace App\Tables;
 
-use App\Enum\RoleEnum;
 use App\Models\Role;
 use App\Models\User;
+use App\Enum\RoleEnum;
 
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use ProtoneMedia\Splade\AbstractTable;
 use ProtoneMedia\Splade\SpladeTable;
-use Spatie\QueryBuilder\AllowedFilter;
 use Spatie\QueryBuilder\QueryBuilder;
+use ProtoneMedia\Splade\AbstractTable;
+use ProtoneMedia\Splade\Facades\Toast;
+use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Database\Eloquent\Builder;
 
 class RoleTable extends AbstractTable
 {
@@ -40,10 +41,12 @@ class RoleTable extends AbstractTable
      *
      * @return mixed
      */
-    public function for ()
+    public function for()
     {
-        return QueryBuilder::for(User::class)
-            ->join('roles', 'roles.user_id', 'profesors.id')
+        return QueryBuilder::for(Role::class)
+            ->distinct()
+            ->select('roles.*', 'profesors.name')
+            ->join('profesors', 'roles.user_id', 'profesors.id')
             ->allowedFields(['roles.id', 'roles.user_id', 'roles.role_id'])
             ->allowedFilters([
                 AllowedFilter::partial('global', 'profesors.name'),
@@ -61,34 +64,35 @@ class RoleTable extends AbstractTable
     {
 
         $table
-            ->withGlobalSearch()
-            ->column('id')
+            ->withGlobalSearch(
+                label: __('Buscar'),
+            )
             ->column(
                 key: 'role_id',
                 label: 'Role',
-                as: fn($role_id) => RoleEnum::ROLES[$role_id] ?? 'Undefined',
+                as: fn ($role_id) => RoleEnum::ROLES[$role_id] ?? 'Undefined',
             )
             ->column(
                 key: 'name',
-                label: 'Profesor',
+                label: __('Profesor'),
             )
-            ->column('actions');
+            ->column('actions', label: __('Acciones'));
 
-        $table->selectFilter('role_id', RoleEnum::ROLES);
+        $table->selectFilter('role_id', RoleEnum::ROLES, label: __('Rol'));
 
         $table->bulkAction(
-            label: 'Delete roles',
+            label: __('Eliminar roles'),
             each: function (Role $role) {
                 $role->delete();
             },
-            confirm: true
+            confirm: true,
+            after: function () {
+                Toast::success('Roles eliminados correctamente.')
+                    ->autoDismiss(5)
+                    ->leftBottom();
+            }
         );
 
-        // ->searchInput()
-        // ->selectFilter()
-        // ->withGlobalSearch()
-
-        // ->bulkAction()
-        // ->export()
+        $table->paginate(10);
     }
 }

@@ -4,6 +4,7 @@ use App\Http\Controllers\AsignatureController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepartamentController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\InformeController;
 use App\Http\Controllers\ObservacionController;
 use App\Http\Controllers\PlanController;
 use App\Http\Controllers\ProfesorController;
@@ -105,12 +106,15 @@ Route::middleware('splade')->group(function () {
         });
 
         Route::middleware('can:viewAny,App\Models\Plan')->group(function () {
+
             Route::get('/plan/actual', [PlanController::class, 'actual'])->name('plan.actual');
+            Route::get('/plan/show/{plan}', [PlanController::class, 'show'])->name('plan.show');
 
             Route::middleware('can:create,App\Models\Plan')->group(function () {
                 Route::get('/plan/create', [PlanController::class, 'create'])->name('plan.create');
                 Route::post('/plan/create', [PlanController::class, 'add'])->name('plan.add');
             });
+
 
             Route::delete('/plan/delete/{plan}', [PlanController::class, 'delete'])->name('plan.delete');
 
@@ -121,6 +125,31 @@ Route::middleware('splade')->group(function () {
         Route::middleware('can:viewAny,App\Models\Plan')->group(function () {
 
             Route::post('/observacion/create/{plan}', [ObservacionController::class, 'add'])->name('observacion.add');
+            Route::delete('/observacion/delete/{observacion}', [ObservacionController::class, 'delete'])->name('observacion.delete');
+            Route::patch('/observacion/update/{observacion}', [ObservacionController::class, 'update'])->name('observacion.update');
+        });
+
+        Route::middleware('can:viewAny,App\Models\Informe')->group(function () {
+
+            Route::get('/informes', [InformeController::class, 'show'])->name('informe.show');
+
+            Route::get('/informe/{informe}', [InformeController::class, 'view'])
+                ->name('informe.view')
+                ->middleware('can:view,informe');
+
+            Route::middleware('can:create,App\Models\Informe')->group(function () {
+                Route::get('/informes/create', [InformeController::class, 'create'])->name('informe.create');
+                Route::post('/informes/create', [InformeController::class, 'add'])->name('informe.start');
+            });
+
+            Route::middleware('can:update,informe')->group(function () {
+                Route::get('/informes/edit/{informe}', [InformeController::class, 'edit'])->name('informe.edit');
+                Route::patch('/informes/edit/{informe}', [InformeController::class, 'update'])->name('informe.update');
+            });
+
+            Route::delete('/informes/delete/{informe}', [InformeController::class, 'delete'])
+                ->name('informe.delete')
+                ->middleware('can:delete,informe');
         });
     });
 

@@ -6,6 +6,7 @@ import { createApp } from "vue/dist/vue.esm-bundler.js";
 import { renderSpladeApp, SpladePlugin } from "@protonemedia/laravel-splade";
 
 import PlanCreate from "./components/PlanCreate.vue";
+import Evaluacion from "./components/Evaluacion.vue";
 
 const el = document.getElementById("app");
 
@@ -20,5 +21,6 @@ app.use(SpladePlugin, {
 });
 
 app.component("PlanCreate", PlanCreate);
+app.component("Evaluacion", Evaluacion);
 
 app.mount(el);
