@@ -18,7 +18,7 @@
             <x-splade-button>{{ __('Editar plan actual') }}</x-splade-button>
             </Link>
 
-            <x-splade-form method="delete" :confirm="__('Estas seguro que deseas este plan')"
+            <x-splade-form method="delete" :confirm="__('Estas seguro que deseas eliminar este plan')"
                 :confirm-button="__('Eliminar plan')" :action="route('plan.delete', $plan->id)">
                 <x-splade-submit danger :label="__('Eliminar plan actual')" />
             </x-splade-form>
