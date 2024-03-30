@@ -77,7 +77,8 @@
 
     <hr>
 
-    <Link href="{{ route('informe.show') . '?filter[departament_id]=' . $plan->departament_id }}"
+    <Link
+        href="{{ route('informe.show') . '?filter[departament_id]=' . $plan->departament_id . (!is_null($plan->periodo_id) ? '&periodo_id=' . $plan->periodo_id : '') }}"
         class="text-primary-500 hover:text-primary-800 border rounded-lg px-4 py-3 inline-block">
     {{ __('Ver todos los informes de controles a clases') }}
     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"

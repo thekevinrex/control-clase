@@ -25,4 +25,9 @@ class Plan extends Model
     {
         return $this->belongsTo(Departament::class);
     }
+
+    public function periodo()
+    {
+        return $this->belongsTo(Periodo::class);
+    }
 }

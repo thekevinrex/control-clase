@@ -66,6 +66,11 @@ class InformesTable extends AbstractTable
                 AllowedFilter::exact('departament_id', 'departament_id', false),
             ]);
 
+        if ($periodo_id = $this->request->query('periodo_id')) {
+            $query->where('periodo_id', $periodo_id);
+        } else
+            $query->whereNull('periodo_id');
+
         if (
             $this->request->user()->isAdmin() ||
             $this->request->user()->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::ADMIN, RoleEnum::DECANA]))
@@ -101,7 +106,7 @@ class InformesTable extends AbstractTable
         $table->column(
             key: 'periodo_id',
             label: __('Periodo'),
-            as: fn ($periodo_id, Informe $informe) => is_null($periodo_id) ? __('Actual') : $periodo_id,
+            as: fn ($periodo_id, Informe $informe) => is_null($periodo_id) ? __('Actual') : $informe->periodo->name,
         );
 
         if (

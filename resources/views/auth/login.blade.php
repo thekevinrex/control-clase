@@ -14,10 +14,10 @@
 
             <div class="flex items-center justify-end">
                 @if (Route::has('password.request'))
-                    <Link class="underline text-sm text-gray-600 hover:text-gray-900"
-                        href="{{ route('password.request') }}">
-                    {{ __('Olvidaste tu contraseña?') }}
-                    </Link>
+                <Link class="underline text-sm text-gray-600 hover:text-gray-900"
+                    href="{{ route('password.request') }}">
+                {{ __('Olvidaste tu contraseña?') }}
+                </Link>
                 @endif
 
                 <x-splade-submit class="ml-3" :label="__('Entrar')" />

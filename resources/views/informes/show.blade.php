@@ -4,9 +4,11 @@
             {{ __('Informes') }}
         </h1>
 
+        @can('create', App\Models\Informe::class)
         <Link href="{{ route('informe.create') }}">
         <x-splade-button>{{ __('Crear informe') }}</x-splade-button>
         </Link>
+        @endcan
     </x-slot>
 
     <div class="py-12">

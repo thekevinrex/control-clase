@@ -1,7 +1,9 @@
 @inject('navigation', 'App\Services\NavigationService', request())
 
 @php
-    $navigationMap = $navigation->getNavigaitonMap();
+$navigationMap = $navigation->getNavigaitonMap(
+footer : true
+);
 @endphp
 
 <div className="flex justify-center items-center  ">
@@ -25,20 +27,20 @@
         <div className="w-full flex justify-evenly  max-md:flex-col flex-wrap gap-5 items-start">
 
             @foreach ($navigationMap as $name => $navigation)
-                <div className="w-auto h-auto max-w-[300px] flex flex-col">
-                    <h2 className="text-lg font-bold text-gray-500 mb-7">{{ $name }}</h2>
+            <div className="w-auto h-auto max-w-[300px] flex flex-col">
+                <h2 className="text-lg font-bold text-gray-500 mb-7">{{ $name }}</h2>
 
-                    <ul className="space-y-2">
+                <ul className="space-y-2">
 
-                        @foreach ($navigation as $link)
-                            <li>
-                                <Link href="{{ $link['link'] }}">
-                                {{ $link['name'] }}
-                                </Link>
-                            </li>
-                        @endforeach
-                    </ul>
-                </div>
+                    @foreach ($navigation as $link)
+                    <li>
+                        <Link href="{{ $link['link'] }}">
+                        {{ $link['name'] }}
+                        </Link>
+                    </li>
+                    @endforeach
+                </ul>
+            </div>
             @endforeach
         </div>
 

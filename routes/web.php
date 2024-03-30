@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\AsignatureController;
-use App\Http\Controllers\CategoryController;
-use App\Http\Controllers\DepartamentController;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\InformeController;
-use App\Http\Controllers\ObservacionController;
-use App\Http\Controllers\PlanController;
-use App\Http\Controllers\ProfesorController;
-use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\PlanController;
+use App\Http\Controllers\RoleController;
+use App\Http\Controllers\InformeController;
+use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\PeriodosController;
+use App\Http\Controllers\ProfesorController;
+use App\Http\Controllers\AsignatureController;
+use App\Http\Controllers\DepartamentController;
+use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\ObservacionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -36,13 +38,19 @@ Route::middleware('splade')->group(function () {
     // Registers routes to support async File Uploads with Filepond...
     Route::spladeUploads();
 
+
     Route::middleware(['auth', 'verified'])->group(function () {
 
-        Route::get('/', [HomeController::class, 'navigation'])->name('dashboard');
+        Route::get('/sitemap', [HomeController::class, 'navigation'])->name('sitemap');
+
+        Route::get('/', [HomeController::class, 'dashboard'])->name('dashboard');
 
         Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
         Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
         Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+        Route::get('/notification', [NotificationController::class, 'show'])->name('notification');
+        Route::get('/notification/{notificacion}', [NotificationController::class, 'view'])->name('notification.view');
 
         Route::middleware('can:viewAny,App\Models\User')->group(function () {
 
@@ -150,6 +158,17 @@ Route::middleware('splade')->group(function () {
             Route::delete('/informes/delete/{informe}', [InformeController::class, 'delete'])
                 ->name('informe.delete')
                 ->middleware('can:delete,informe');
+        });
+
+        Route::middleware('can:viewAny,App\Models\Periodo')->group(function () {
+
+            Route::get('/periodos', [PeriodosController::class, 'show'])->name('periodos.show');
+
+            Route::get('/peridos/v/{periodo}', [PeriodosController::class, 'view'])->name('periodos.view');
+
+            Route::post('/periodos/create', [PeriodosController::class, 'create'])->name('periodos.create')->middleware('can:create,App\Models\Periodo');
+            Route::post('/periodos/archivar', [PeriodosController::class, 'archivar'])->name('periodos.archivar')->middleware('can:archivar,App\Models\Periodo');
+            Route::delete('/periodos/delete/{periodo}', [PeriodosController::class, 'delete'])->name('periodos.delete')->middleware('can:delete,App\Models\Periodo,periodo');
         });
     });
 

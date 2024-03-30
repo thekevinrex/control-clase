@@ -2,7 +2,7 @@
     <x-slot name="header">
 
         <h1 class="text-2xl md:text-4xl font-bold">
-            {{ __('Planes actuales') }}
+            {{ $periodo->name }}
         </h1>
 
     </x-slot>
@@ -15,7 +15,7 @@
 
             <div class="flex flex-col gap-3 pb-5 border-b">
                 <h1>
-                    <Link href="{{ route('plan.show', $plan['id']) }}" class="text-lg md:text-xl font-bold ">
+                    <Link href="{{ route('plan.show', $plan['id']) }}" class="text-lg md:text-xl font-bold">
                     {{ __('Plan de control a clases del departamento') . ' - ' . $plan['departament'] }}
                     </Link>
                 </h1>
@@ -31,7 +31,7 @@
         </div>
         @else
         <div class="text-center">
-            <p class="text-lg">No hay planes actuales</p>
+            <p class="text-lg">No hay planes</p>
         </div>
         @endif
     </div>

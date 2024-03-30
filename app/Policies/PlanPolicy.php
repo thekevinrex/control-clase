@@ -30,6 +30,10 @@ class PlanPolicy
             return false;
         }
 
+        if (Plan::whereNull('periodo_id')->where('departament_id', $user->departament_id)->count() > 0) {
+            return false;
+        }
+
         return true;
     }
 
@@ -39,11 +43,15 @@ class PlanPolicy
             return false;
         }
 
-        return $user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE]));
+        return  $user->departament_id == $plan->departament_id && $user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE]));
     }
 
-    public function update()
+    public function update(User $user, Plan $plan)
     {
-        return true;
+        if (!is_null($plan->periodo_id)) {
+            return false;
+        }
+
+        return  $user->departament_id == $plan->departament_id && $user->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE]));
     }
 }

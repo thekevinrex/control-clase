@@ -55,7 +55,7 @@ class InformePolicy
         }
 
         $total = $plan->controls()->where('controlador', $user->id)->count();
-        $actuals = Informe::where('user_id', $user->id)->count();
+        $actuals = Informe::whereNull('periodo_id')->where('user_id', $user->id)->count();
 
         if ($actuals >= $total) {
             return false;
@@ -69,6 +69,10 @@ class InformePolicy
      */
     public function update(User $user, Informe $informe): bool
     {
+        if (!is_null($informe->periodo_id)) {
+            return false;
+        }
+
         return $informe->user_id == $user->id || $user->roles->contains(fn ($value) => in_array($value->role_id, [
             RoleEnum::ADMIN,
         ])) || $user->isAdmin();
@@ -79,6 +83,10 @@ class InformePolicy
      */
     public function delete(User $user, Informe $informe): bool
     {
+        if (!is_null($informe->periodo_id)) {
+            return false;
+        }
+
         return $informe->user_id == $user->id || $user->roles->contains(fn ($value) => in_array($value->role_id, [
             RoleEnum::ADMIN,
         ])) || $user->isAdmin();

@@ -14,43 +14,46 @@ class NavigationService
         $this->request = request();
     }
 
-    public function getNavigaitonMap(bool $header = false)
+    public function getNavigaitonMap(bool $header = false, bool $footer = false)
     {
+
+        $user = $this->request->user();
+
         return collect([
             _('Administración') => [
                 [
                     "name" => __('Profesores'),
                     "link" => route('profesors.show'),
                     'des' => 'Administra la información de los profesores',
-                    'can' => $this->request->user()->can('viewAny', \App\Models\User::class),
+                    'can' => $user->can('viewAny', \App\Models\User::class),
                     "route" => "profesors.*",
                 ],
                 [
                     "name" => __('Departamentos'),
                     "link" => route('departament.show'),
                     'des' => 'Administra la información de los departamentos',
-                    'can' => $this->request->user()->can('viewAny', \App\Models\Departament::class),
+                    'can' => $user->can('viewAny', \App\Models\Departament::class),
                     "route" => "departament.*",
                 ],
                 [
                     "name" => __('Roles'),
                     "link" => route('role.show'),
                     "des" => 'Asigna los roles a los profesores',
-                    'can' => $this->request->user()->can('viewAny', \App\Models\Role::class),
+                    'can' => $user->can('viewAny', \App\Models\Role::class),
                     "route" => "role.*",
                 ],
                 [
                     "name" => __('Categories'),
                     "link" => route('categories.show'),
                     "des" => 'Administra la información de las categories',
-                    'can' => $this->request->user()->can('viewAny', \App\Models\Category::class),
+                    'can' => $user->can('viewAny', \App\Models\Category::class),
                     "route" => "categories.*",
                 ],
                 [
                     "name" => __('Asignatures'),
                     "link" => route("asignature.show"),
                     "des" => 'Administra la información de las asignaturas',
-                    'can' => $this->request->user()->can('viewAny', \App\Models\Asignature::class),
+                    'can' => $user->can('viewAny', \App\Models\Asignature::class),
                     "route" => "asignature.*",
                 ]
             ],
@@ -59,27 +62,21 @@ class NavigationService
                     "name" => __('Plan Actual'),
                     "link" => route('plan.actual'),
                     "des" => '',
-                    'can' => !$this->request->user()->isAdmin()
+                    'can' => $user->can('actual', \App\Models\Plan::class)
                 ],
                 [
                     "name" => __('Crear plan'),
                     "link" => route('plan.create'),
                     "des" => '',
-                    'can' => !$this->request->user()->isAdmin()
+                    'can' => $user->can('create', \App\Models\Plan::class)
                 ],
-                [
-                    "name" => __('Planes'),
-                    "link" => '#',
-                    "des" => '',
-                    'can' => !$this->request->user()->isAdmin()
-                ]
             ],
             __('Usuario') => [
                 [
                     "name" => __('Perfil'),
                     "link" => route('profile.edit'),
                     "des" => '',
-                    'can' => !$header
+                    'can' => !$header && !$footer
                 ]
             ],
             __('Informes') => [
@@ -87,14 +84,22 @@ class NavigationService
                     "name" => __('Informes'),
                     "link" => route('informe.show'),
                     "des" => '',
-                    'can' => !$this->request->user()->isAdmin()
+                    'can' => $user->can('viewAny', \App\Models\Informe::class)
                 ],
                 [
                     "name" => __('Crear informe'),
                     "link" => route('informe.create'),
                     "des" => '',
-                    'can' => !$this->request->user()->isAdmin()
+                    'can' => $user->can('create', \App\Models\Informe::class)
                 ]
+            ],
+            __('Archivo') => [
+                [
+                    "name" => __('Informes de control archivados'),
+                    "link" => route('periodos.show'),
+                    "des" => '',
+                    'can' => $user->can('viewAny', \App\Models\Periodo::class)
+                ],
             ]
         ])
             ->mapWithKeys(function ($item, $key) {

@@ -20,4 +20,9 @@ class PlanControl extends Model
     {
         return $this->belongsTo(User::class, 'controlado', 'id');
     }
+
+    public function plan()
+    {
+        return $this->belongsTo(Plan::class);
+    }
 }

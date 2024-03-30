@@ -11,6 +11,15 @@ class Periodo extends Model
 
     protected $table = 'periodos';
 
-    protected $fillable = [];
+    protected $fillable = ['name', 'fecha_inicio', 'fecha_fin', 'semanas'];
 
+    public function planes()
+    {
+        return $this->hasMany(Plan::class);
+    }
+
+    public function informes()
+    {
+        return $this->hasMany(Informe::class);
+    }
 }

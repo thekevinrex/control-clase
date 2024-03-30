@@ -23,6 +23,10 @@ class Observacion extends Component
         if (Auth::user()->id == $observacion->user_id  || (Auth::user()->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE])) && $observacion->plan->departament_id == Auth::user()->departament_id) || Auth::user()->isAdmin()) {
             $this->own = true;
         }
+
+        if (!is_null($observacion->plan->periodo_id)) {
+            $this->own = false;
+        }
     }
 
     /**

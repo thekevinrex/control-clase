@@ -7,6 +7,7 @@ use App\Models\Plan;
 use App\Models\User;
 use App\Models\Informe;
 use App\Models\Category;
+use App\Models\Notifiaction;
 use App\Tables\ControlsTable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
@@ -204,7 +205,15 @@ class PlanController extends Controller
             ],
             $request->controls
         ) as $control) {
-            $plan->controls()->create($control);
+            $cont = $plan->controls()->create($control);
+
+            Notifiaction::create([
+                'user_id' => Auth::user()->id,
+                'to_user_id' => $control['controlador'],
+                'message' => __('Has sido asignado a controlar a :name en la semana :semana del periodo actual', ['name' => $cont->profesor_controlado->name, 'semana' => $control['semana']]),
+                'type' => 'control',
+                'aditional_id' => $cont->id,
+            ]);
         }
 
         Toast::success('Plan de control a clases registrado correctamente')
@@ -227,6 +236,10 @@ class PlanController extends Controller
             'controls.*.to_profesor' => 'El profesor seleccionado es incorrecto',
         ]);
 
+        foreach ($plan->controls as $control) {
+            Notifiaction::where('aditional_id', $control->id)->where('type', 'control')->delete();
+        }
+
         $plan->controls()->delete([]);
 
         foreach (array_map(
@@ -237,7 +250,15 @@ class PlanController extends Controller
             ],
             $request->controls
         ) as $control) {
-            $plan->controls()->create($control);
+            $cont = $plan->controls()->create($control);
+
+            Notifiaction::create([
+                'user_id' => Auth::user()->id,
+                'to_user_id' => $control['controlador'],
+                'message' => __('Has sido asignado a controlar a :name en la semana :semana del periodo actual', ['name' => $cont->profesor_controlado->name, 'semana' => $control['semana']]),
+                'type' => 'control',
+                'aditional_id' => $cont->id,
+            ]);
         }
 
         Toast::success('Plan de control a clases editado correctamente')
@@ -250,6 +271,10 @@ class PlanController extends Controller
     public function delete(Request $request, Plan $plan)
     {
         $this->authorize('delete', [Plan::class, $plan]);
+
+        foreach ($plan->controls as $control) {
+            Notifiaction::where('aditional_id', $control->id)->where('type', 'control')->delete();
+        }
 
         $plan->delete();
 

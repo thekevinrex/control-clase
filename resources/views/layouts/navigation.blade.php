@@ -4,6 +4,8 @@
 
 $navigationMap = $navigation->getNavigaitonMap(true);
 
+$notifications = \App\Models\Notifiaction::where('seen', false)->where('to_user_id',
+auth()->user()->id)->count();
 @endphp
 
 <x-splade-toggle>
@@ -65,12 +67,42 @@ $navigationMap = $navigation->getNavigaitonMap(true);
                 </div>
 
                 <!-- Settings Dropdown -->
-                <div class="hidden sm:flex sm:items-center">
+                <div class="hidden sm:flex sm:items-center gap-x-3">
+
+                    <x-nav-link :href="route('notification')" :active="request()->routeIs('notification')">
+                        <div class="relative">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="group-hover:stroke-primary-800">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                <path
+                                    d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+                                <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+                            </svg>
+
+
+
+                            @if(isset($notifications) && $notifications > 0)
+                            <div
+                                class="absolute -top-1/2 -right-1/2  rounded-full bg-red-600 text-white py-1 px-2 text-xs">
+                                {{
+                                $notifications }}
+                            </div>
+                            @endif
+                        </div>
+                    </x-nav-link>
                     <x-dropdown placement="bottom-end">
                         <x-slot name="trigger">
                             <button
                                 class="flex items-center text-sm font-medium text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition duration-150 ease-in-out">
-                                <div>{{ Auth::user()->name }}</div>
+                                <div><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+                                        <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                                        <path d="M8 7a4 4 0 1 0 8 0a4 4 0 0 0 -8 0" />
+                                        <path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2" />
+                                    </svg></div>
 
                                 <div class="ml-1">
                                     <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg"
@@ -146,6 +178,16 @@ $navigationMap = $navigation->getNavigaitonMap(true);
                 </div>
 
                 <div class="mt-3 space-y-1">
+
+                    <x-responsive-nav-link :href="route('notification')">
+                        {{ __('Notificaciones') }}
+                        @if(isset($notifications) && $notifications > 0)
+                        <div class="rounded-full bg-red-600 text-white py-1 px-2 text-xs">
+                            {{ $notifications }}
+                        </div>
+                        @endif
+                    </x-responsive-nav-link>
+
                     <x-responsive-nav-link :href="route('profile.edit')">
                         {{ __('Perfil') }}
                     </x-responsive-nav-link>

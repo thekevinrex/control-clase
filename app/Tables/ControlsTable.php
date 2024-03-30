@@ -117,15 +117,22 @@ class ControlsTable extends AbstractTable
                 $informe = Informe::where('departament_id', $this->request->user()->departament_id)
                     ->where('state', 3)->where('user_id', $control->controlador)
                     ->whereNotIn('id', $done)
-                    ->where('to_user_id', $control->controlado)
-                    ->first();
+                    ->where('to_user_id', $control->controlado);
+
+                if (!is_null($control->plan->periodo_id)) {
+                    $informe->where('periodo_id', $control->plan->periodo_id);
+                } else {
+                    $informe->whereNull('periodo_id');
+                }
+
+                $informe = $informe->first();
 
 
                 if ($informe && !in_array($informe->id, $done)) {
                     $done[] = $informe->id;
                     return $informe->evaluation;
                 } else {
-                    return __('Pendiente');
+                    return is_null($control->plan->periodo_id) ? __('Pendiente') : __('No realizado');
                 }
             }
         );

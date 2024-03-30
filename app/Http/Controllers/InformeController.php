@@ -4,11 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Plan;
 use App\Models\User;
+use App\Enum\RoleEnum;
 use App\Models\Informe;
+use App\Models\Notifiaction;
 use Illuminate\Http\Request;
 use App\Tables\InformesTable;
-use App\Http\Requests\InformeRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\InformeRequest;
 use ProtoneMedia\Splade\Facades\Toast;
 
 class InformeController extends Controller
@@ -104,6 +106,24 @@ class InformeController extends Controller
 
         $informe = Informe::create($data);
 
+        foreach (User::where('departament_id', $user->departament_id)->get() as $profesor) {
+
+            if (!$profesor->roles->contains(fn ($value) => in_array($value->role_id, [RoleEnum::JEFE]))) {
+                continue;
+            }
+
+            Notifiaction::create([
+                'user_id' => $user->id,
+                'to_user_id' => $profesor->id,
+                'message' => __('El profesor :controlador ha realizado un informe de control a clases al profesor :controlado', [
+                    'controlador' => $user->name,
+                    'controlado' => $informe->controlado->name,
+                ]),
+                'type' => 'informe',
+                'aditional_id' => $informe->id,
+            ]);
+        }
+
         Toast::success('Informe registrado correctamente')
             ->autoDismiss(5)
             ->leftBottom();
@@ -143,6 +163,11 @@ class InformeController extends Controller
 
     public function delete(Informe $informe)
     {
+
+        Notifiaction::where('aditional_id', $informe->id)
+            ->where('type', 'informe')
+            ->delete();
+
         $informe->delete();
 
         Toast::success('Informe eliminado correctamente')

@@ -11,6 +11,11 @@ class Informe extends Model
 
     protected $guarded = [];
 
+    public function periodo()
+    {
+        return $this->belongsTo(Periodo::class);
+    }
+
     public function controlador()
     {
         return $this->belongsTo(User::class, 'user_id', 'id');

@@ -5,7 +5,13 @@
             {{ $own && is_null($plan->periodo_id) ? __('Plan actual') : __('Plan de control a clases') }}
         </h1>
 
-        @if(isset($plan) && $own )
+        @if(!is_null($plan->periodo_id))
+        <p>
+            {{ __('Periodo') }}: {{ $plan->periodo->name }}
+        </p>
+        @endif
+
+        @if(isset($plan) && $own && is_null($plan->periodo_id) )
         <div class=" flex flex-row gap-5 flex-wrap">
 
             <Link href="{{ route('plan.edit', $plan->id) }}">

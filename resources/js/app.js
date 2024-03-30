@@ -7,6 +7,7 @@ import { renderSpladeApp, SpladePlugin } from "@protonemedia/laravel-splade";
 
 import PlanCreate from "./components/PlanCreate.vue";
 import Evaluacion from "./components/Evaluacion.vue";
+import Barchart from "./components/Barchart.vue";
 
 const el = document.getElementById("app");
 
@@ -22,5 +23,6 @@ app.use(SpladePlugin, {
 
 app.component("PlanCreate", PlanCreate);
 app.component("Evaluacion", Evaluacion);
+app.component("Chart", Barchart);
 
 app.mount(el);
