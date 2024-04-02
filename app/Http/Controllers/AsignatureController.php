@@ -39,7 +39,9 @@ class AsignatureController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required']
+            'name' => ['alpha', 'required', 'unique:asignatures,name']
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $asignature = Asignature::create([
@@ -57,7 +59,9 @@ class AsignatureController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required']
+            'name' => ['alpha', 'required', 'unique:asignatures,name']
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
 

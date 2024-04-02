@@ -58,4 +58,11 @@ class UpdateProfesorRequest extends FormRequest
             }
         ];
     }
+
+    public function messages(): array
+    {
+        return [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos',
+        ];
+    }
 }

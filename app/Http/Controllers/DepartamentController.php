@@ -46,8 +46,10 @@ class DepartamentController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required'],
+            'name' => ['alpha', 'required', 'unique:departaments,name'],
             'asignatures.*' => ['int', 'required', 'exists:asignatures,id'],
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
 
@@ -68,8 +70,10 @@ class DepartamentController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required'],
+            'name' => ['alpha', 'required', 'unique:departaments,name'],
             'asignatures.*' => ['int', 'required', 'exists:asignatures,id'],
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $departament->update([

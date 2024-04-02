@@ -48,6 +48,8 @@ class ProfesorController extends Controller
 
         $request->validate([
             'email' => [Rule::unique('profesors')->ignore($user)],
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $data = $request->validated();

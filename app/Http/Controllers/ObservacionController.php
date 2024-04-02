@@ -17,7 +17,7 @@ class ObservacionController extends Controller
         $request->validate([
             'observacion' => 'required',
         ], [
-            'observacion' => 'La observación es requerida',
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos',
         ]);
 
         if (is_null($plan)) {
@@ -42,7 +42,7 @@ class ObservacionController extends Controller
         $request->validate([
             'observacion' => 'required',
         ], [
-            'observacion' => 'La observación es requerida',
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos',
         ]);
 
         $observacion->update([

@@ -40,7 +40,9 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required']
+            'name' => ['alpha', 'required', 'unique:categories,name']
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $category = Category::create([
@@ -58,7 +60,9 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'name' => ['string', 'required']
+            'name' => ['alpha', 'required', 'unique:categories,name']
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
 

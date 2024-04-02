@@ -43,6 +43,8 @@ class RoleController extends Controller
         $request->validate([
             'user_id' => ['int', 'required', 'exists:profesors,id'],
             'role_id' => ['int', 'required', Rule::in(array_keys(RoleEnum::ROLES))]
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $role = Role::create([
@@ -63,6 +65,8 @@ class RoleController extends Controller
         $request->validate([
             'user_id' => ['int', 'required', 'exists:profesors,id'],
             'role_id' => ['int', 'required', Rule::in(array_keys(RoleEnum::ROLES))]
+        ], [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $role->update([

@@ -26,13 +26,20 @@ class InformeRequest extends FormRequest
             'asignature_id' => 'required|integer|exists:App\Models\Asignature,id',
 
             'titulo' => 'required|string',
-            'grupo' => 'required|string',
+            'grupo' => 'required|numeric',
             'tipo_clase' => 'required|string',
 
             'logros' => 'string',
             'recomendaciones' => 'string',
             'deficiencias' => 'string',
             'evaluation' => 'required|integer',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos',
         ];
     }
 }

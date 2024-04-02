@@ -187,9 +187,7 @@ class PlanController extends Controller
             'controls.*.to_profesor' => ['required', 'integer', 'exists:profesors,id'],
             'controls.*.semana' => ['required', 'integer', 'min:1'],
         ], [
-            'controls.*.semana' => 'La semana debe ser mayor o igual a uno',
-            'controls.*.profesor' => 'El profesor seleccionado es incorrecto',
-            'controls.*.to_profesor' => 'El profesor seleccionado es incorrecto',
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         $plan = Plan::create([
@@ -231,9 +229,7 @@ class PlanController extends Controller
             'controls.*.to_profesor' => ['required', 'integer', 'exists:profesors,id'],
             'controls.*.semana' => ['required', 'integer', 'min:1'],
         ], [
-            'controls.*.semana' => 'La semana debe ser mayor o igual a uno',
-            'controls.*.profesor' => 'El profesor seleccionado es incorrecto',
-            'controls.*.to_profesor' => 'El profesor seleccionado es incorrecto',
+            '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
 
         foreach ($plan->controls as $control) {
