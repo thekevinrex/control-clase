@@ -29,11 +29,8 @@ abstract class RoleEnum extends Enum
 
     const ROLES = [
         self::ADMIN => 'Administrator',
-        self::DECANA => 'Decana',
-        self::JEFE => 'Departament Jefe',
+        self::DECANA => 'Vicedecana de formación',
+        self::JEFE => 'Jefe de departamento',
         self::PROFESOR => 'Profesor',
-        self::JEFE_ASIGNATURE => 'Asignature Jefe',
     ];
 }
-
-?>

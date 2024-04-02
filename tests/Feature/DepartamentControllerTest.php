@@ -104,7 +104,7 @@ class DepartamentControllerTest extends TestCase
         ]);
 
         $this->assertDatabaseHas('departaments_asignatures', [
-            'departament_id' => Departament::latest()->first()->id,
+            'departament_id' => Departament::orderBy('id', 'desc')->first()->id,
             'asignature_id' => $asignature->id,
         ]);
     }

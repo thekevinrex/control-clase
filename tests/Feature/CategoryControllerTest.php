@@ -12,7 +12,7 @@ class CategoryControllerTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function testShow()
+    public function testShow_category()
     {
 
         $user = User::factory()->create([
@@ -29,7 +29,7 @@ class CategoryControllerTest extends TestCase
         $response->assertViewHas('categories');
     }
 
-    public function testCreate()
+    public function testCreate_category()
     {
 
         $user = User::factory()->create([
@@ -46,7 +46,7 @@ class CategoryControllerTest extends TestCase
         $response->assertViewHas('action', route('categories.add'));
     }
 
-    public function testEdit()
+    public function testEdit_category()
     {
         $user = User::factory()->create([
             'super_admin' => 1,
@@ -96,7 +96,7 @@ class CategoryControllerTest extends TestCase
         $this->assertDatabaseHas('categories', $data);
     }
 
-    public function testUpdate()
+    public function testUpdate_category()
     {
         $user = User::factory()->create([
             'super_admin' => 1,
@@ -127,7 +127,7 @@ class CategoryControllerTest extends TestCase
         $this->assertDatabaseHas('categories', $data);
     }
 
-    public function testDestroy()
+    public function testDestroy_category()
     {
 
         $user = User::factory()->create([
