@@ -166,7 +166,12 @@ class HomeController extends Controller
 
         $plan = Plan::whereNull('periodo_id')->where('departament_id', $departament_id)->first();
 
-        $controles = $plan->controls->count();
+        if (!is_null($plan)) {
+            $controles = $plan->controls->count();
+        } else {
+            $controles = 0;
+        }
+
         $informes = Informe::whereNull('periodo_id')->where('departament_id', $departament_id)->count();
 
         $next = null;
