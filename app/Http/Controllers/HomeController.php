@@ -141,9 +141,9 @@ class HomeController extends Controller
                 return [
                     'periodo' => $periodo->name,
                     'controles' => $periodo->planes()->where('departament_id', $departament_id)->get()->map(
-                        fn ($plan) => $plan->controls->count()
-                    )->sum(),
-                    'informes' => $periodo->informes()->where('departament_id', $departament_id)->count(),
+                        fn ($plan) => $plan->controls->count() ?? 0
+                    )->sum() ?? 0,
+                    'informes' => $periodo->informes()->where('departament_id', $departament_id)->count() ?? 0,
                 ];
             }
         );

@@ -70,8 +70,6 @@ class CategoryController extends Controller
             ->autoDismiss(5)
             ->leftBottom();
 
-            
-            
         return redirect()->back();
     }
 
