@@ -13,6 +13,9 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\InformeRequest;
 use ProtoneMedia\Splade\Facades\Toast;
 
+use Barryvdh\DomPDF\Facade\Pdf;
+
+
 class InformeController extends Controller
 {
 
@@ -175,5 +178,19 @@ class InformeController extends Controller
             ->leftBottom();
 
         return redirect()->back();
+    }
+
+    public function download(Informe $informe)
+    {
+        $data = [
+            'informe' => $informe,
+            'own' => Auth::user()->id == $informe->user_id
+        ];
+
+        $titulo = $informe->titulo ?? 'Informe de control a clase';
+
+        $pdf = PDF::loadView('informes.pdf', $data);
+        // download PDF file with download method
+        return $pdf->download("{$titulo}.pdf");
     }
 }

@@ -145,6 +145,10 @@ Route::middleware('splade')->group(function () {
                 ->name('informe.view')
                 ->middleware('can:view,informe');
 
+            Route::get('/informe/{informe}/download', [InformeController::class, 'download'])
+                ->name('informe.download')
+                ->middleware('can:view,informe');
+
             Route::middleware('can:create,App\Models\Informe')->group(function () {
                 Route::get('/informes/create', [InformeController::class, 'create'])->name('informe.create');
                 Route::post('/informes/create', [InformeController::class, 'add'])->name('informe.start');

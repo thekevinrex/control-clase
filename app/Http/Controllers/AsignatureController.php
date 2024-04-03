@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Asignature;
 use Illuminate\Http\Request;
 use App\Tables\AsignatureTable;
+use Illuminate\Validation\Rule;
 use ProtoneMedia\Splade\Facades\Toast;
 
 class AsignatureController extends Controller
@@ -59,7 +60,7 @@ class AsignatureController extends Controller
     {
 
         $request->validate([
-            'name' => ['alpha', 'required', 'unique:asignatures,name']
+            'name' => ['alpha', 'required', Rule::unique(Asignature::class)->ignore($asignature->id)]
         ], [
             '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);

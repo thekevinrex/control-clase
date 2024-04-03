@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Departament;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Tables\DepartamentTable;
 use ProtoneMedia\Splade\Facades\Toast;
 
@@ -70,7 +71,7 @@ class DepartamentController extends Controller
     {
 
         $request->validate([
-            'name' => ['alpha', 'required', 'unique:departaments,name'],
+            'name' => ['alpha', 'required', Rule::unique(Departament::class)->ignore($departament->id)],
             'asignatures.*' => ['int', 'required', 'exists:asignatures,id'],
         ], [
             '*' => 'Existen campos sin rellenar y/o con datos incorrectos'

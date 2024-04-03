@@ -43,7 +43,7 @@ class DepartamentTable extends AbstractTable
         return QueryBuilder::for(Departament::class)
             ->select('departaments.*')
             ->distinct()
-            ->join('departaments_asignatures', 'departaments_asignatures.departament_id', 'departaments.id')
+            ->leftJoin('departaments_asignatures', 'departaments_asignatures.departament_id', 'departaments.id')
             ->allowedIncludes('asignature')
             ->allowedFilters([
                 AllowedFilter::partial('global', 'departaments.name'),

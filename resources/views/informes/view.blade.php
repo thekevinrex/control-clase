@@ -5,9 +5,9 @@
         </h1>
 
         <div class="flex gap-2">
-            <Link href="{{ route('informe.create') }}">
-            <x-splade-button>{{ __('Descargar') }}</x-splade-button>
-            </Link>
+            <a href="{{ route('informe.download', $informe->id) }}">
+                <x-splade-button>{{ __('Descargar') }}</x-splade-button>
+            </a>
 
             @if ($own)
             <x-splade-form method="delete"

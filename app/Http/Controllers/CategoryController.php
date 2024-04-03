@@ -3,8 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
-use App\Tables\CategoryTable;
 use Illuminate\Http\Request;
+use App\Tables\CategoryTable;
+use Illuminate\Validation\Rule;
 use ProtoneMedia\Splade\Facades\Toast;
 
 class CategoryController extends Controller
@@ -60,7 +61,7 @@ class CategoryController extends Controller
     {
 
         $request->validate([
-            'name' => ['alpha', 'required', 'unique:categories,name']
+            'name' => ['alpha', 'required', Rule::unique(Category::class)->ignore($category->id)]
         ], [
             '*' => 'Existen campos sin rellenar y/o con datos incorrectos'
         ]);
